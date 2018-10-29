@@ -1,7 +1,7 @@
 # PFLogSumm-HTML-GUI
 Bash shell script to Generate POSTFIX statistics HTML report using pflogsumm as the backend
 
-The script processes the pflogsumm output to a easy to view HTML report
+The script processes the pflogsumm output to an easy to view HTML report
 
 ## Screenshots of the web interface
 
