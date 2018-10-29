@@ -223,7 +223,7 @@ cat > $HTMLOUTPUTDIR/$HTMLOUTPUTFILENAME << 'HTMLTEMPLATEOUT'
     <meta name="author" content="">
     <link rel="icon" href="../../../../favicon.ico">
 
-    <title>Offcanvas template for Bootstrap</title>
+    <title>Postfix Report Dashboard</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
