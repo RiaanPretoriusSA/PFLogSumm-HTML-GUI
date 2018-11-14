@@ -40,7 +40,7 @@ tee ${PFSYSCONFDIR}/"pflogsumui.conf" <<EOF
 #PFLOGSUMUI CONFIG
 
 ##  Postfix Log Location
-LOGFILELOCATION="/var/www/html/maillog"
+LOGFILELOCATION="/var/log/maillog"
 
 ##  pflogsumm details
 PFLOGSUMMOPTIONS=" --verbose_msg_detail --zero_fill "
