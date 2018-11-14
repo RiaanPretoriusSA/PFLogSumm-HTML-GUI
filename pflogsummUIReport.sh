@@ -30,17 +30,37 @@
 #   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #=====================================================================================================================
 
-#LOGFILE="/var/log/maillog*"
-LOGFILE="maillog*"
-PFLOGSUMMBIN="/usr/sbin/pflogsumm --verbose_msg_detail --zero_fill "
+#CONFIG FILE LOCATION
+PFSYSCONFDIR="/etc"
+
+#Create Blank Config File if it does not exist
+if [ ! -f ${PFSYSCONFDIR}/"pflogsumui.conf" ]
+then
+tee ${PFSYSCONFDIR}/"pflogsumui.conf" <<EOF
+#PFLOGSUMUI CONFIG
+
+##  Postfix Log Location
+LOGFILELOCATION="/var/www/html/maillog"
+
+##  pflogsumm details
+PFLOGSUMMOPTIONS=" --verbose_msg_detail --zero_fill "
+PFLOGSUMMBIN="/usr/sbin/pflogsumm  "
+
+##  HTML Output
 HTMLOUTPUTDIR="/var/www/html/"
 HTMLOUTPUTFILENAME="index.html"
+
+EOF
+fi
+
+#Load Config File
+. ${PFSYSCONFDIR}/"pflogsumui.conf"
+
 
 REPORTDATE=$(date '+%Y-%m-%d %H:%M:%S')
 ACTIVEHOSTNAME=$(cat /proc/sys/kernel/hostname)
 
-#echo "Generating pflogsumm report"
-$PFLOGSUMMBIN -e $LOGFILE > /tmp/mailreport
+$PFLOGSUMMBIN $PFLOGSUMMOPTIONS  -e $LOGFILELOCATION > /tmp/mailreport
 
 
 #Extract Sections from PFLOGSUMM
