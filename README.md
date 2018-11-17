@@ -14,6 +14,18 @@ The script processes the pflogsumm output to an easy to view HTML report
 
 *pflogsumm* needs to be installed
 
+For RedHat based operating systems
+
+```
+yum -y install postfix-perl-scripts 
+```
+
+For Ubuntu/Debian based operating systems
+
+```
+apt-get -y install pflogsumm 
+```
+
 ## Script installation
 
 You can clone or download the script direct to a location of your choice. Here is an example setup:
