@@ -48,7 +48,7 @@ PFLOGSUMMBIN="/usr/sbin/pflogsumm  "
 
 ##  HTML Output
 HTMLOUTPUTDIR="/var/www/html/"
-HTMLOUTPUTFILENAME="index.html"
+HTMLOUTPUT_INDEXDASHBOARD="index.html"
 
 EOF
 fi
@@ -57,8 +57,19 @@ fi
 . ${PFSYSCONFDIR}/"pflogsumui.conf"
 
 
-REPORTDATE=$(date '+%Y-%m-%d %H:%M:%S')
+#Create the Cache Directory if it does not exist
+if [ ! -d $HTMLOUTPUTDIR/data ]; then
+  mkdir  $HTMLOUTPUTDIR/data;
+fi
+
+
 ACTIVEHOSTNAME=$(cat /proc/sys/kernel/hostname)
+
+#Temporal Values
+REPORTDATE=$(date '+%Y-%m-%d %H:%M:%S')
+CURRENTYEAR=$(date +'%Y')
+CURRENTMONTH=$(date +'%b')
+CURRENTDAY=$(date +"%d")
 
 $PFLOGSUMMBIN $PFLOGSUMMOPTIONS  -e $LOGFILELOCATION > /tmp/mailreport
 
@@ -231,686 +242,363 @@ echo $MessageswithnosizedataTable > /tmp/Messageswithnosizedata
 # SED search and replace tags to fill the content
 #======================================================
 
-cat > $HTMLOUTPUTDIR/$HTMLOUTPUTFILENAME << 'HTMLTEMPLATEOUT'
-
+cat > $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD << 'HTMLOUTPUTINDEXDASHBOARD'
 <!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
+    <meta name="description" content="Postfix PFLOGSUMM Dashboard Index">
+    <meta name="author" content="Riaan Pretorius">
+    <link rel="icon" href="http://www.postfix.org/favicon.ico">
 
-    <title>Postfix Report Dashboard</title>
+    <title>Dashboard Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+
 
     <style>
-        html,
         body {
-            overflow-x: hidden;
-            /* Prevent scroll on narrow devices */
+            padding-top: 5rem;
         }
 
-        body {
-            padding-top: 56px;
+        footer {
+            background-color: #eee;
+            padding: 25px;
         }
 
-        @media (max-width: 991.98px) {
-            .offcanvas-collapse {
-                position: fixed;
-                top: 56px;
-                /* Height of navbar */
-                bottom: 0;
-                left: 100%;
-                width: 100%;
-                padding-right: 1rem;
-                padding-left: 1rem;
-                overflow-y: auto;
-                visibility: hidden;
-                background-color: #343a40;
-                transition-timing-function: ease-in-out;
-                transition-duration: .3s;
-                transition-property: left, visibility;
-            }
-
-
-        }
-
-        .nav-scroller {
-            position: relative;
-            z-index: 2;
-            height: 2.75rem;
-            overflow-y: hidden;
-        }
-
-        .nav-scroller .nav {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-wrap: nowrap;
-            flex-wrap: nowrap;
-            padding-bottom: 1rem;
-            margin-top: -1px;
-            overflow-x: auto;
-            color: rgba(255, 255, 255, .75);
-            text-align: center;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .nav-underline .nav-link {
-            padding-top: .75rem;
-            padding-bottom: .75rem;
-            font-size: .875rem;
-            color: #6c757d;
-        }
-
-        .nav-underline .nav-link:hover {
-            color: #007bff;
-        }
-
-        .nav-underline .active {
-            font-weight: 500;
-            color: #343a40;
-        }
-
-        .text-white-50 {
-            color: rgba(255, 255, 255, .5);
-        }
-
-        .bg-purple {
-            background-color: #6f42c1;
-        }
-
-        .lh-100 {
-            line-height: 1;
-        }
-
-        .lh-125 {
-            line-height: 1.25;
-        }
-
-        .lh-150 {
-            line-height: 1.5;
-        }
-
-        .countertextsize {
-            font-size: 30px;
-        }
-
-  footer{background-color: #eee; padding: 25px;}
-       ul, li{list-style-type: none;}
-       .list{margin-top: 15px;}    
-
-        pre {
-        
-            font-family: monospace;
-            overflow-x: auto;
-            margin: 1em 0;
-        
-            white-space: pre-line;
+        .spacer10 {
+            height: 10px;
         }
     </style>
 
 </head>
 
-<body class="bg-light">
+<body>
 
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-        <a class="navbar-brand mr-auto mr-lg-0" href="#">Postfix Report Dashboard</a>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Postfix PFLOGSUMM Dashboard</a>
     </nav>
 
 
 
-    <main role="main" class="container">
 
-        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
-            <i class="far fa-envelope-open fa-2x fa-fw" width="48" height="48" style="margin-right: 10px;"> </i>
-            <div class="lh-100">
-                <h6 class="mb-0 text-white lh-100"> Server: ##ACTIVEHOSTNAME##</h6>
-                <small> Report Date: ##REPORTDATE##</small>
+    <div class="container">
+
+
+        <h3 class="pb-3 mb-4 font-italic border-bottom">
+            Select Report
+            <dl class="row">
+                <dt class="col-sm-3" style="font-size: 0.5em;">Last Update</dt>
+                <dd class="col-sm-9" style="font-size: 0.5em;">##REPORTDATE##</dd>
+                <dt class="col-sm-3" style="font-size: 0.5em;">Server</dt>
+                <dd class="col-sm-9" style="font-size: 0.5em;">##ACTIVEHOSTNAME##</dd>
+
+            </dl>
+        </h3>
+
+
+        <div class="row">
+
+            <div class="col-sm">
+
+                <!-- January Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">January</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##JanuaryCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#JanuaryCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="JanuaryCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush JanuaryList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- January End -->
+
             </div>
+
+            <div class="col-sm">
+
+                <!-- February Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">February</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##FebruaryCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#FebruaryCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="FebruaryCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush FebruaryList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- February End -->
+
+            </div>
+
+            <div class="col-sm">
+
+                <!-- March Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">March</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##MarchCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#MarchCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="MarchCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush MarchList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- March End -->
+
+            </div>
+
+            <div class="col-sm">
+
+                <!-- April Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">April</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##AprilCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#AprilCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="AprilCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush AprilList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- April End -->
+
+            </div>
+
+
         </div>
 
+        <br>
 
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Privacy Alert!</strong> This report is exposing user email accounts to the internet. This page
-            should be made secure and protected
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        <div class="row">
+
+            <div class="col-sm">
+
+                <!-- May Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">May</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##MayCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#MayCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="MayCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush MayList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- May End -->
+
+            </div>
+
+            <div class="col-sm">
+
+                <!-- June Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">June</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##JuneCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#JuneCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="JuneCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush JuneList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- June End -->
+
+            </div>
+
+            <div class="col-sm">
+
+                <!-- July Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">July</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##JulyCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#JulyCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="JulyCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush JulyList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- July End -->
+
+            </div>
+
+            <div class="col-sm">
+
+                <!-- August Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">August</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##AugustCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#AugustCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="AugustCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush AugustList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- August End -->
+
+            </div>
+
         </div>
 
-        <!-- Quick Status Blocks -->
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <h6 class="border-bottom border-gray pb-2 mb-0">Mail Server Statistics</h6>
+        <br>
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Received Email</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##ReceivedEmail##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Delivered Mail</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##DeliveredEmail##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Forwarded Mail</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##ForwardedEmail##"
-                                    data-speed="1500"></span>
-                            </p>
+        <div class="row">
+
+            <div class="col-sm">
+
+                <!-- September Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">September</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##SeptemberCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#SeptemberCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="SeptemberCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush SeptemberList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- September End -->
+
             </div>
 
+            <div class="col-sm">
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Deferred
-                                    ##DeferredEmailDeferralsCount##</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##DeferredEmailCount##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-danger" style="font-size: 15px;">Bounced Mail</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##BouncedEmail##" data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Rejected Mail
-                                    ##RejectedEmailPercentage##</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##RejectedEmailCount##"
-                                    data-speed="1500"></span>
-                            </p>
+                <!-- October Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">October</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##OctoberCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#OctoberCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="OctoberCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush OctoberList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- October End -->
+
             </div>
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Rejected Warning
-                                    ##RejectedEmailPercentage##</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##RejectedWarningsEmail##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Held Mail</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##HeldEmail##" data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Discarded Mail
-                                    ##DiscardedEmailPercentage##</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##DiscardedEmailCount##"
-                                    data-speed="1500"></span>
-                            </p>
+            <div class="col-sm">
+
+                <!-- November Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">November</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##NovemberCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#NovemberCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="NovemberCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush NovemberList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- November End -->
+
             </div>
 
+            <div class="col-sm">
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Bytes Received</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##BytesReceivedEmail##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Bytes Delivered</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##BytesDeliveredEmail##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Mail Senders</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##SendersEmail##" data-speed="1500"></span>
-                            </p>
+                <!-- December Start-->
+                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5><strong class="d-inline-block mb-2 text-primary">December</strong></h5>
+                        <h6>Report Count <span class="badge badge-primary">##DecemberCount##</span></h6>
+                        <div class="spacer10"></div>
+                        <a data-toggle="collapse" href="#DecemberCard" aria-expanded="true" class="d-block"> View
+                            Reports </a>
+                        <div id="DecemberCard" class="collapse hide">
+                            <div class="card-body ">
+                                <div class="list-group list-group-flush DecemberList ">
+                                    <!-- Dynamic Item List-->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- December End -->
+
             </div>
 
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Sending Hosts/Domains</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##SendingHostsDomainsEmail##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Mail Recipients</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##RecipientsEmail##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="media text-muted pt-3">
-                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-white">
-                                <strong class="d-block text-gray-dark" style="font-size: 15px;">Recipient Hosts/Domains</strong>
-                                <span class="timer count-numbers countertextsize" data-to="##RecipientHostsDomainsEmail##"
-                                    data-speed="1500"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
+    </div>
 
-
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <h6 class="border-bottom border-gray pb-2 mb-0">Graphs</h6>
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div id="PerDayTrafficSummaryTableGraph" style="width: auto; height: 400px; "></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div id="PerHourTrafficDailyAverageTableGraph" style="width: auto; height: 400px;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#PerDayTrafficSummary" role="button" aria-expanded="false" aria-controls="PerDayTrafficSummary">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Per-Day Traffic Summary</h6>
-            </a>
-            <div class="container collapse" id="PerDayTrafficSummary">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive" id="PerDayTrafficSummaryTable">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Received</th>
-                                        <th scope="col">Delivered</th>
-                                        <th scope="col">Deferred</th>
-                                        <th scope="col">Bounced</th>
-                                        <th scope="col">Rejected</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##PerDayTrafficSummaryTable##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#PerHourTrafficDailyAverage" role="button" aria-expanded="false"
-                aria-controls="PerHourTrafficDailyAverage">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Per-Hour Traffic Daily Average</h6>
-            </a>
-            <div class="container collapse" id="PerHourTrafficDailyAverage">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive" id="PerHourTrafficDailyAverageTable">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Time</th>
-                                        <th scope="col">Received</th>
-                                        <th scope="col">Delivered</th>
-                                        <th scope="col">Deferred</th>
-                                        <th scope="col">Bounced</th>
-                                        <th scope="col">Rejected</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##PerHourTrafficDailyAverageTable##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#HostDomainSummaryMessagesReceived" role="button" aria-expanded="false"
-                aria-controls="HostDomainSummaryMessagesReceived">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Host/Domain Summary: Messages Received</h6>
-            </a>
-            <div class="container collapse" id="HostDomainSummaryMessagesReceived">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Message Count</th>
-                                        <th scope="col">Bytes</th>
-                                        <th scope="col">Host/Domain</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##HostDomainSummaryMessagesReceived##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#SendersbyMessageSize" role="button" aria-expanded="false" aria-controls="SendersbyMessageSize">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Senders by Message Size</h6>
-            </a>
-            <div class="container collapse" id="SendersbyMessageSize">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Size</th>
-                                        <th scope="col">Sender</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##SendersbyMessageSize##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#SendersbyMessageCount" role="button" aria-expanded="false" aria-controls="SendersbyMessageCount">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Senders by Message Count</h6>
-            </a>
-            <div class="container collapse" id="SendersbyMessageCount">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Message Count</th>
-                                        <th scope="col">Sender</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##Sendersbymessagecount##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#RecipientsbyMessageCount" role="button" aria-expanded="false"
-                aria-controls="RecipientsbyMessageCount">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Recipients by Message Count</h6>
-            </a>
-            <div class="container collapse" id="RecipientsbyMessageCount">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Message Count</th>
-                                        <th scope="col">Recipient</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##RecipientsbyMessageCount##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#HostDomainSummaryMessageDelivery" role="button" aria-expanded="false"
-                aria-controls="HostDomainSummaryMessageDelivery">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Host/Domain Summary: Message Delivery</h6>
-            </a>
-            <div class="container collapse" id="HostDomainSummaryMessageDelivery">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Sent Count</th>
-                                        <th scope="col">Bytes</th>
-                                        <th scope="col">Defers</th>
-                                        <th scope="col">Average Daily</th>
-                                        <th scope="col">Maximum Daily</th>
-                                        <th scope="col">Host/Domain</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##HostDomainSummaryMessageDelivery##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#Recipientsbymessagesize" role="button" aria-expanded="false" aria-controls="Recipientsbymessagesize">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Recipients by message size</h6>
-            </a>
-            <div class="container collapse" id="Recipientsbymessagesize">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Size</th>
-                                        <th scope="col">Recipient</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##Recipientsbymessagesize##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#Messageswithnosizedata" role="button" aria-expanded="false" aria-controls="Messageswithnosizedata">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Messages with no size data</h6>
-            </a>
-            <div class="container collapse" id="Messageswithnosizedata">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table-responsive table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Queue ID</th>
-                                        <th scope="col">Email Address</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ##Messageswithnosizedata##
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#MessageDeferralDetail" role="button" aria-expanded="false" aria-controls="MessageDeferralDetail">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Message Deferral Detail</h6>
-            </a>
-            <div class="container collapse" id="MessageDeferralDetail">
-                <div class="row">
-                    <div class="col-md-12">
-                        <br>
-                        <div class="pre-scrollable" style="max-height: 40vh; ">
-                            <pre>
-                                    ##MessageDeferralDetail##
-                        </pre>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#MessageBounceDetailbyrelay" role="button" aria-expanded="false"
-                aria-controls="MessageBounceDetailbyrelay">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Message Bounce Detail (By Relay)</h6>
-            </a>
-            <div class="container collapse" id="MessageBounceDetailbyrelay">
-                <div class="row">
-                    <div class="col-md-12">
-                        <br>
-                        <div class="pre-scrollable" style="max-height: 40vh; ">
-                            <pre>
-                                        ##MessageBounceDetailbyrelay##
-                            </pre>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#MailWarnings" role="button" aria-expanded="false" aria-controls="MailWarnings">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Mail Warnings</h6>
-            </a>
-            <div class="container collapse" id="MailWarnings">
-                <div class="row">
-                    <div class="col-md-12">
-                        <br>
-                        <div class="pre-scrollable" style="max-height: 40vh; ">
-                            <pre>
-                                            ##MailWarnings##
-                                </pre>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <a data-toggle="collapse" href="#MailFatalErrors" role="button" aria-expanded="false" aria-controls="MailFatalErrors">
-                <h6 class="border-bottom border-gray pb-2 mb-0">Mail Fatal Errors</h6>
-            </a>
-            <div class="container collapse" id="MailFatalErrors">
-                <div class="row">
-                    <div class="col-md-12">
-                        <br>
-                        <div class="pre-scrollable" style="max-height: 40vh; ">
-                            <pre>
-                                        ##MailFatalErrors##
-                                    </pre>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-    </main>
 
 
     <br>
-
 
 
 
@@ -922,211 +610,49 @@ cat > $HTMLOUTPUTDIR/$HTMLOUTPUTFILENAME << 'HTMLTEMPLATEOUT'
                 <br>
                 <span>Powered by <a href="https://github.com/KTamas/pflogsumm">PFLOGSUMM</a> </span>
                 <br>
-                <span><a href="https://github.com/RiaanPretoriusSA/PFLogSumm-HTML-GUI">PFLOGSUMM HTML UI Report</a> </span>
+                <span><a href="https://github.com/RiaanPretoriusSA/PFLogSumm-HTML-GUI">PFLOGSUMM HTML UI Report</a>
+                </span>
             </p>
         </div>
     </footer>
-
-
+    <!-- Footer -->
 
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/umd/popper.min.js"></script>
+
+</body>
 
 
-    <!-- Icons -->
-    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-    <script>
-        feather.replace()
-    </script>
+<script>
+    $(document).ready(function () {
+        $('.JanuaryList').load("data/jan_rpt.html?rnd=" + Math.random());
+        $('.FebruaryList').load("data/feb_rpt.html?rnd=" + Math.random());
+        $('.MarchList').load("data/mar_rpt.html?rnd=" + Math.random());
+        $('.AprilList').load("data/apr_rpt.html?rnd=" + Math.random());
+        $('.MayList').load("data/may_rpt.html?rnd=" + Math.random());
+        $('.JuneList').load("data/jun_rpt.html?rnd=" + Math.random());
+        $('.JulyList').load("data/jul_rpt.html?rnd=" + Math.random());
+        $('.AugustList').load("data/aug_rpt.html?rnd=" + Math.random());
+        $('.SeptemberList').load("data/sep_rpt.html?rnd=" + Math.random());
+        $('.OctoberList').load("data/oct_rpt.html?rnd=" + Math.random());
+        $('.NovemberList').load("data/nov_rpt.html?rnd=" + Math.random());
+        $('.DecemberList').load("data/dec_rpt.html?rnd=" + Math.random());
+    });
+</script>
 
-    <!-- Graphs -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/data.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-
-    <!-- Code Highlight-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
 
 
 </body>
 
-<script>
-
-    Highcharts.chart('PerDayTrafficSummaryTableGraph', {
-        data: {
-            table: 'PerDayTrafficSummaryTable'
-        },
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: 'Per-Day Traffic Summary'
-        },
-        yAxis: {
-            allowDecimals: false,
-            title: {
-                text: 'Units'
-            }
-        },
-
-        plotOptions: {
-            line: {
-                dataLabels: {
-                    enabled: true
-                },
-                enableMouseTracking: false
-            }
-        }
-
-    });
-
-
-    Highcharts.chart('PerHourTrafficDailyAverageTableGraph', {
-        data: {
-            table: 'PerHourTrafficDailyAverageTable'
-        },
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: 'Per-Hour Traffic Daily Average'
-        },
-        yAxis: {
-            allowDecimals: false,
-            title: {
-                text: 'Units'
-            }
-        },
-
-        plotOptions: {
-            line: {
-                dataLabels: {
-                    enabled: true
-                },
-                enableMouseTracking: false
-            }
-        },
-
-
-
-    });
-
-</script>
-
-
-
-<script>
-    (function ($) {
-        $.fn.countTo = function (options) {
-            options = options || {};
-
-            return $(this).each(function () {
-                // set options for current element
-                var settings = $.extend({}, $.fn.countTo.defaults, {
-                    from: $(this).data('from'),
-                    to: $(this).data('to'),
-                    speed: $(this).data('speed'),
-                    refreshInterval: $(this).data('refresh-interval'),
-                    decimals: $(this).data('decimals')
-                }, options);
-
-                // how many times to update the value, and how much to increment the value on each update
-                var loops = Math.ceil(settings.speed / settings.refreshInterval),
-                    increment = (settings.to - settings.from) / loops;
-
-                // references & variables that will change with each update
-                var self = this,
-                    $self = $(this),
-                    loopCount = 0,
-                    value = settings.from,
-                    data = $self.data('countTo') || {};
-
-                $self.data('countTo', data);
-
-                // if an existing interval can be found, clear it first
-                if (data.interval) {
-                    clearInterval(data.interval);
-                }
-                data.interval = setInterval(updateTimer, settings.refreshInterval);
-
-                // initialize the element with the starting value
-                render(value);
-
-                function updateTimer() {
-                    value += increment;
-                    loopCount++;
-
-                    render(value);
-
-                    if (typeof (settings.onUpdate) == 'function') {
-                        settings.onUpdate.call(self, value);
-                    }
-
-                    if (loopCount >= loops) {
-                        // remove the interval
-                        $self.removeData('countTo');
-                        clearInterval(data.interval);
-                        value = settings.to;
-
-                        if (typeof (settings.onComplete) == 'function') {
-                            settings.onComplete.call(self, value);
-                        }
-                    }
-                }
-
-                function render(value) {
-                    var formattedValue = settings.formatter.call(self, value, settings);
-                    $self.html(formattedValue);
-                }
-            });
-        };
-
-        $.fn.countTo.defaults = {
-            from: 0,               // the number the element should start at
-            to: 0,                 // the number the element should end at
-            speed: 1000,           // how long it should take to count between the target numbers
-            refreshInterval: 100,  // how often the element should be updated
-            decimals: 0,           // the number of decimal places to show
-            formatter: formatter,  // handler for formatting the value before rendering
-            onUpdate: null,        // callback method for every time the element is updated
-            onComplete: null       // callback method for when the element finishes updating
-        };
-
-        function formatter(value, settings) {
-            return value.toFixed(settings.decimals);
-        }
-    }(jQuery));
-
-    jQuery(function ($) {
-        // custom formatting example
-        $('.count-number').data('countToOptions', {
-            formatter: function (value, options) {
-                return value.toFixed(options.decimals).replace(/\B(?=(?:\d{3})+(?!\d))/g, ',');
-            }
-        });
-
-        // start all the timers
-        $('.timer').each(count);
-
-        function count(options) {
-            var $this = $(this);
-            options = $.extend({}, options || {}, $this.data('countToOptions') || {});
-            $this.countTo(options);
-        }
-    });
-</script>
-
-
 </html>
+HTMLOUTPUTINDEXDASHBOARD
 
-HTMLTEMPLATEOUT
 
 
 
@@ -1265,6 +791,44 @@ d
 
 
 
+
+
+
+#======================================================
+# Count Existing Reports - For Dashboard Display
+#======================================================
+JanRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Jan*.html | wc -l)
+FebRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Feb*.html | wc -l)
+MarRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Mar*.html | wc -l)
+AprRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Apr*.html | wc -l)
+MayRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-May*.html | wc -l)
+JunRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Jun*.html | wc -l)
+JulRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Jul*.html | wc -l)
+AugRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Aug*.html | wc -l)
+SepRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Sep*.html | wc -l)
+OctRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Oct*.html | wc -l)
+NovRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Nov*.html | wc -l)
+DecRPTCount=$(find $HTMLOUTPUTDIR/data  -maxdepth 1 -type f -name $CURRENTYEAR-Dec*.html | wc -l)
+
+
+#======================================================
+# Replace Report Totals for Report - Index
+#======================================================
+sed -i "s/##JanuaryCount##/$JanRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##FebruaryCount##/$FebRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##MarchCount##/$MarRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##AprilCount##/$AprRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##MayCount##/$MayRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##JuneCount##/$JunRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##JulyCount##/$JulRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##AugustCount##/$AugRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##SeptemberCount##/$SepRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##OctoberCount##/$OctRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##NovemberCount##/$NovRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##DecemberCount##/$DecRPTCount/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+
+sed -i "s/##REPORTDATE##/$REPORTDATE/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
+sed -i "s/##ACTIVEHOSTNAME##/$ACTIVEHOSTNAME/g" $HTMLOUTPUTDIR/$HTMLOUTPUT_INDEXDASHBOARD
 
 
 #======================================================
