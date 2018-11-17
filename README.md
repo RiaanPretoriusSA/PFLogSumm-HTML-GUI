@@ -57,7 +57,7 @@ The script needs to run once a day to update the reports using CRON. Note, the s
 Because we want the report for the previous day, we run this report one minute before midnight
 
 ```
-59 11 * * * /opt/PFLogSummReport/pflogsummUIReport.sh >/dev/null 2>&1
+59 11 * * * /opt/PFLogSumm-HTML-GUI/pflogsummUIReport.sh >/dev/null 2>&1
 ```
 
 # WARNING: The reports expose user email accounts. You MUST password protect the directory you are hosting the files in
