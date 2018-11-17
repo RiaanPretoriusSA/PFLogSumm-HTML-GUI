@@ -51,6 +51,8 @@ HTMLOUTPUTDIR="/var/www/html/"
 HTMLOUTPUT_INDEXDASHBOARD="index.html"
 
 EOF
+echo "DEFAULT configuration file writen, Please verify the paths before you continue"
+exit 0
 fi
 
 #Load Config File
