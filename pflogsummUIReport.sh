@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -x
+# Debug option - should be disabled unless required
+#set -x
 #=====================================================================================================================
 #   DESCRIPTION  Generating a stand alone web report for postix log files, 
 #                Runs on all Linux platforms with postfix installed
