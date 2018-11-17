@@ -18,8 +18,7 @@ The script processes the pflogsumm output to an easy to view HTML report
 
 You can clone or download the script direct to a location of your choice. Here is an example setup:
 ```
-mkdir /opt/PFLogSummReport
-cd /opt/PFLogSummReport
+cd /opt
 git clone https://github.com/RiaanPretoriusSA/PFLogSumm-HTML-GUI.git
 ```
 
