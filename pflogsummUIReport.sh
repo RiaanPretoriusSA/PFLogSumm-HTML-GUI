@@ -53,7 +53,7 @@ HTMLOUTPUTDIR="/var/www/html/"
 HTMLOUTPUT_INDEXDASHBOARD="index.html"
 
 EOF
-echo "DEFAULT configuration file writen, Please verify the paths before you continue"
+echo "DEFAULT configuration file writen to ${PFSYSCONFDIR}/pflogsumui.conf, Please verify the paths before you continue"
 exit 0
 fi
 
@@ -704,7 +704,7 @@ cat > $HTMLOUTPUTDIR/data/$CURRENTYEAR-$CURRENTMONTH-$CURRENTDAY.html << 'HTMLRE
 <body>
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Postfix Report</a>
+        <a class="navbar-brand" href="../">Postfix Report</a>
     </nav>
 
 
