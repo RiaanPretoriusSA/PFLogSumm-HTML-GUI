@@ -43,7 +43,7 @@ tee ${PFSYSCONFDIR}/"pflogsumui.conf" <<EOF
 LOGFILELOCATION="/var/log/maillog"
 
 ##  pflogsumm details
-PFLOGSUMMOPTIONS=" --verbose_msg_detail --zero_fill "
+PFLOGSUMMOPTIONS=" -d today --verbose_msg_detail --zero_fill "
 PFLOGSUMMBIN="/usr/sbin/pflogsumm  "
 
 ##  HTML Output
