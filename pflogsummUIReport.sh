@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -x
 #=====================================================================================================================
 #   DESCRIPTION  Generating a stand alone web report for postix log files, 
 #                Runs on all Linux platforms with postfix installed
@@ -43,7 +43,8 @@ tee ${PFSYSCONFDIR}/"pflogsumui.conf" <<EOF
 LOGFILELOCATION="/var/log/maillog"
 
 ##  pflogsumm details
-PFLOGSUMMOPTIONS=" -d today --verbose_msg_detail --zero_fill "
+##  NOTE: DONT USE -d today - breaks the script
+PFLOGSUMMOPTIONS=" --verbose_msg_detail --zero_fill "
 PFLOGSUMMBIN="/usr/sbin/pflogsumm  "
 
 ##  HTML Output
