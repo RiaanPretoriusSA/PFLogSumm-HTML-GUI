@@ -66,8 +66,9 @@ if [ ! -d $HTMLOUTPUTDIR/data ]; then
   mkdir  $HTMLOUTPUTDIR/data;
 fi
 
-
+#TOOLS
 ACTIVEHOSTNAME=$(cat /proc/sys/kernel/hostname)
+MOVEF="/usr/bin/mv -f "
 
 #Temporal Values
 REPORTDATE=$(date '+%Y-%m-%d %H:%M:%S')
@@ -122,123 +123,125 @@ RecipientHostsDomainsEmail=$(sed 's/recipient hosts\/domains/recipienthostsdomai
 #======================================================
 # Extract Information into variable -> Per-Day Traffic Summary
 #======================================================
- PerDayTrafficSummaryTable=""
 while IFS= read -r var
 do
- PerDayTrafficSummaryTable+="<tr>"
- PerDayTrafficSummaryTable+=$(echo "$var" | awk '{print "<td>"$1" "$2" "$3"</td>""<td>"$4"</td>""<td>"$5"</td>""<td>"$6"</td>""<td>"$7"</td>""<td>"$8"</td>"}')
- PerDayTrafficSummaryTable+="</tr>"
+    PerDayTrafficSummaryTable=""
+    PerDayTrafficSummaryTable+="<tr>"
+    PerDayTrafficSummaryTable+=$(echo "$var" | awk '{print "<td>"$1" "$2" "$3"</td>""<td>"$4"</td>""<td>"$5"</td>""<td>"$6"</td>""<td>"$7"</td>""<td>"$8"</td>"}')
+    PerDayTrafficSummaryTable+="</tr>"
+    echo $PerDayTrafficSummaryTable >> /tmp/PerDayTrafficSummary_tmp
 done < /tmp/PerDayTrafficSummary
-echo $PerDayTrafficSummaryTable > /tmp/PerDayTrafficSummary
-
+$MOVEF  /tmp/PerDayTrafficSummary_tmp /tmp/PerDayTrafficSummary
 
 #======================================================
 # Extract Information into variable -> Per-Hour Traffic Daily Average
 #======================================================
- PerHourTrafficDailyAverageTable=""
 while IFS= read -r var
 do
- PerHourTrafficDailyAverageTable+="<tr>"
- PerHourTrafficDailyAverageTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>""<td>"$3"</td>""<td>"$4"</td>""<td>"$5"</td>""<td>"$6"</td>"}')
- PerHourTrafficDailyAverageTable+="</tr>"
+    PerHourTrafficDailyAverageTable=""
+    PerHourTrafficDailyAverageTable+="<tr>"
+    PerHourTrafficDailyAverageTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>""<td>"$3"</td>""<td>"$4"</td>""<td>"$5"</td>""<td>"$6"</td>"}')
+    PerHourTrafficDailyAverageTable+="</tr>"
+    echo $PerHourTrafficDailyAverageTable >> /tmp/PerHourTrafficDailyAverage_tmp
 done < /tmp/PerHourTrafficDailyAverage
-echo $PerHourTrafficDailyAverageTable > /tmp/PerHourTrafficDailyAverage
-
-
+$MOVEF /tmp/PerHourTrafficDailyAverage_tmp /tmp/PerHourTrafficDailyAverage
 
 
 #======================================================
 # Extract Information into variable -> Per-Hour Traffic Daily Average
 #======================================================
- HostDomainSummaryMessageDeliveryTable=""
 while IFS= read -r var
 do
- HostDomainSummaryMessageDeliveryTable+="<tr>"
- HostDomainSummaryMessageDeliveryTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>""<td>"$3"</td>""<td>"$4" "$5"</td>""<td>"$6" "$7"</td>""<td>"$8"</td>" }')
- HostDomainSummaryMessageDeliveryTable+="</tr>"
+    HostDomainSummaryMessageDeliveryTable=""
+    HostDomainSummaryMessageDeliveryTable+="<tr>"
+    HostDomainSummaryMessageDeliveryTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>""<td>"$3"</td>""<td>"$4" "$5"</td>""<td>"$6" "$7"</td>""<td>"$8"</td>" }')
+    HostDomainSummaryMessageDeliveryTable+="</tr>"
+    echo $HostDomainSummaryMessageDeliveryTable >> /tmp/HostDomainSummaryMessageDelivery_tmp
 done < /tmp/HostDomainSummaryMessageDelivery
-echo $HostDomainSummaryMessageDeliveryTable > /tmp/HostDomainSummaryMessageDelivery
+$MOVEF /tmp/HostDomainSummaryMessageDelivery_tmp /tmp/HostDomainSummaryMessageDelivery
 
 
 #======================================================
 # Extract Information into variable -> Host Domain Summary Messages Received
 #======================================================
- HostDomainSummaryMessagesReceivedTable=""
 while IFS= read -r var
 do
- HostDomainSummaryMessagesReceivedTable+="<tr>"
- HostDomainSummaryMessagesReceivedTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>""<td>"$3"</td>"}')
- HostDomainSummaryMessagesReceivedTable+="</tr>"
+    HostDomainSummaryMessagesReceivedTable=""
+    HostDomainSummaryMessagesReceivedTable+="<tr>"
+    HostDomainSummaryMessagesReceivedTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>""<td>"$3"</td>"}')
+    HostDomainSummaryMessagesReceivedTable+="</tr>"
+    echo $HostDomainSummaryMessagesReceivedTable >> /tmp/HostDomainSummaryMessagesReceived_tmp
 done < /tmp/HostDomainSummaryMessagesReceived
-echo $HostDomainSummaryMessagesReceivedTable > /tmp/HostDomainSummaryMessagesReceived
+$MOVEF /tmp/HostDomainSummaryMessagesReceived_tmp /tmp/HostDomainSummaryMessagesReceived
 
 
 #======================================================
 # Extract Information into variable -> Host Domain Summary Messages Received
 #======================================================
- SendersbymessagecountTable=""
 while IFS= read -r var
 do
- SendersbymessagecountTable+="<tr>"
- SendersbymessagecountTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
- SendersbymessagecountTable+="</tr>"
+    SendersbymessagecountTable=""
+    SendersbymessagecountTable+="<tr>"
+    SendersbymessagecountTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
+    SendersbymessagecountTable+="</tr>"
+    echo $SendersbymessagecountTable >> /tmp/Sendersbymessagecount_tmp
 done < /tmp/Sendersbymessagecount
-echo $SendersbymessagecountTable > /tmp/Sendersbymessagecount
+$MOVEF  /tmp/Sendersbymessagecount_tmp /tmp/Sendersbymessagecount
 
 #======================================================
 # Extract Information into variable -> Recipients by message count
 #======================================================
- RecipientsbymessagecountTable=""
-while IFS= read -r var
+ while IFS= read -r var
 do
- RecipientsbymessagecountTable+="<tr>"
- RecipientsbymessagecountTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
- RecipientsbymessagecountTable+="</tr>"
+    RecipientsbymessagecountTable=""
+    RecipientsbymessagecountTable+="<tr>"
+    RecipientsbymessagecountTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
+    RecipientsbymessagecountTable+="</tr>"
+    echo $RecipientsbymessagecountTable >> /tmp/Recipientsbymessagecount_tmp
 done < /tmp/Recipientsbymessagecount
-echo $RecipientsbymessagecountTable > /tmp/Recipientsbymessagecount
+$MOVEF /tmp/Recipientsbymessagecount_tmp /tmp/Recipientsbymessagecount
 
 
 #======================================================
 # Extract Information into variable -> Senders by message size
 #======================================================
- SendersbymessagesizeTable=""
-while IFS= read -r var
+ while IFS= read -r var
 do
- SendersbymessagesizeTable+="<tr>"
- SendersbymessagesizeTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
- SendersbymessagesizeTable+="</tr>"
+    SendersbymessagesizeTable=""
+    SendersbymessagesizeTable+="<tr>"
+    SendersbymessagesizeTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
+    SendersbymessagesizeTable+="</tr>"
+    echo $SendersbymessagesizeTable >> /tmp/Sendersbymessagesize_tmp
 done < /tmp/Sendersbymessagesize
-echo $SendersbymessagesizeTable > /tmp/Sendersbymessagesize
+$MOVEF /tmp/Sendersbymessagesize_tmp /tmp/Sendersbymessagesize
 
 
 #======================================================
 # Extract Information into variable -> Recipients by messagesize Table
 #======================================================
- RecipientsbymessagesizeTable=""
 while IFS= read -r var
 do
- RecipientsbymessagesizeTable+="<tr>"
- RecipientsbymessagesizeTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
- RecipientsbymessagesizeTable+="</tr>"
+    RecipientsbymessagesizeTable=""
+    RecipientsbymessagesizeTable+="<tr>"
+    RecipientsbymessagesizeTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
+    RecipientsbymessagesizeTable+="</tr>"
+    echo $RecipientsbymessagesizeTable >> /tmp/Recipientsbymessagesize_tmp
 done < /tmp/Recipientsbymessagesize
-echo $RecipientsbymessagesizeTable > /tmp/Recipientsbymessagesize
-
+$MOVEF /tmp/Recipientsbymessagesize_tmp /tmp/Recipientsbymessagesize
 
 #======================================================
 # Extract Information into variable -> Recipients by messagesize Table
 #======================================================
- MessageswithnosizedataTable=""
 while IFS= read -r var
 do
- MessageswithnosizedataTable+="<tr>"
- MessageswithnosizedataTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
- MessageswithnosizedataTable+="</tr>"
+    MessageswithnosizedataTable=""
+    MessageswithnosizedataTable+="<tr>"
+    MessageswithnosizedataTable+=$(echo "$var" | awk '{print "<td>"$1"</td>""<td>"$2"</td>"}')
+    MessageswithnosizedataTable+="</tr>"
+    echo $MessageswithnosizedataTable >> /tmp/Messageswithnosizedata_tmp
+    echo $MessageswithnosizedataTable
 done < /tmp/Messageswithnosizedata
-echo $MessageswithnosizedataTable > /tmp/Messageswithnosizedata
-
-
-
-
+$MOVEF  /tmp/Messageswithnosizedata_tmp /tmp/Messageswithnosizedata
 
 #======================================================
 # Single PAGE INDEX HTML TEMPLATE
