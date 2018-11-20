@@ -131,7 +131,7 @@ do
     PerDayTrafficSummaryTable+="</tr>"
     echo $PerDayTrafficSummaryTable >> /tmp/PerDayTrafficSummary_tmp
 done < /tmp/PerDayTrafficSummary
-$MOVEF  /tmp/PerDayTrafficSummary_tmp /tmp/PerDayTrafficSummary
+$MOVEF  /tmp/PerDayTrafficSummary_tmp /tmp/PerDayTrafficSummary &> /dev/null
 
 #======================================================
 # Extract Information into variable -> Per-Hour Traffic Daily Average
@@ -144,7 +144,7 @@ do
     PerHourTrafficDailyAverageTable+="</tr>"
     echo $PerHourTrafficDailyAverageTable >> /tmp/PerHourTrafficDailyAverage_tmp
 done < /tmp/PerHourTrafficDailyAverage
-$MOVEF /tmp/PerHourTrafficDailyAverage_tmp /tmp/PerHourTrafficDailyAverage
+$MOVEF /tmp/PerHourTrafficDailyAverage_tmp /tmp/PerHourTrafficDailyAverage &> /dev/null
 
 
 #======================================================
@@ -158,7 +158,7 @@ do
     HostDomainSummaryMessageDeliveryTable+="</tr>"
     echo $HostDomainSummaryMessageDeliveryTable >> /tmp/HostDomainSummaryMessageDelivery_tmp
 done < /tmp/HostDomainSummaryMessageDelivery
-$MOVEF /tmp/HostDomainSummaryMessageDelivery_tmp /tmp/HostDomainSummaryMessageDelivery
+$MOVEF /tmp/HostDomainSummaryMessageDelivery_tmp /tmp/HostDomainSummaryMessageDelivery &> /dev/null
 
 
 #======================================================
@@ -172,7 +172,7 @@ do
     HostDomainSummaryMessagesReceivedTable+="</tr>"
     echo $HostDomainSummaryMessagesReceivedTable >> /tmp/HostDomainSummaryMessagesReceived_tmp
 done < /tmp/HostDomainSummaryMessagesReceived
-$MOVEF /tmp/HostDomainSummaryMessagesReceived_tmp /tmp/HostDomainSummaryMessagesReceived
+$MOVEF /tmp/HostDomainSummaryMessagesReceived_tmp /tmp/HostDomainSummaryMessagesReceived &> /dev/null
 
 
 #======================================================
@@ -186,7 +186,7 @@ do
     SendersbymessagecountTable+="</tr>"
     echo $SendersbymessagecountTable >> /tmp/Sendersbymessagecount_tmp
 done < /tmp/Sendersbymessagecount
-$MOVEF  /tmp/Sendersbymessagecount_tmp /tmp/Sendersbymessagecount
+$MOVEF  /tmp/Sendersbymessagecount_tmp /tmp/Sendersbymessagecount &> /dev/null
 
 #======================================================
 # Extract Information into variable -> Recipients by message count
@@ -199,7 +199,7 @@ do
     RecipientsbymessagecountTable+="</tr>"
     echo $RecipientsbymessagecountTable >> /tmp/Recipientsbymessagecount_tmp
 done < /tmp/Recipientsbymessagecount
-$MOVEF /tmp/Recipientsbymessagecount_tmp /tmp/Recipientsbymessagecount
+$MOVEF /tmp/Recipientsbymessagecount_tmp /tmp/Recipientsbymessagecount &> /dev/null
 
 
 #======================================================
@@ -213,7 +213,7 @@ do
     SendersbymessagesizeTable+="</tr>"
     echo $SendersbymessagesizeTable >> /tmp/Sendersbymessagesize_tmp
 done < /tmp/Sendersbymessagesize
-$MOVEF /tmp/Sendersbymessagesize_tmp /tmp/Sendersbymessagesize
+$MOVEF /tmp/Sendersbymessagesize_tmp /tmp/Sendersbymessagesize &> /dev/null
 
 
 #======================================================
@@ -227,7 +227,7 @@ do
     RecipientsbymessagesizeTable+="</tr>"
     echo $RecipientsbymessagesizeTable >> /tmp/Recipientsbymessagesize_tmp
 done < /tmp/Recipientsbymessagesize
-$MOVEF /tmp/Recipientsbymessagesize_tmp /tmp/Recipientsbymessagesize
+$MOVEF /tmp/Recipientsbymessagesize_tmp /tmp/Recipientsbymessagesize &> /dev/null
 
 #======================================================
 # Extract Information into variable -> Recipients by messagesize Table
@@ -241,7 +241,7 @@ do
     echo $MessageswithnosizedataTable >> /tmp/Messageswithnosizedata_tmp
     echo $MessageswithnosizedataTable
 done < /tmp/Messageswithnosizedata
-$MOVEF  /tmp/Messageswithnosizedata_tmp /tmp/Messageswithnosizedata
+$MOVEF  /tmp/Messageswithnosizedata_tmp /tmp/Messageswithnosizedata  &> /dev/null
 
 #======================================================
 # Single PAGE INDEX HTML TEMPLATE

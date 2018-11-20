@@ -76,12 +76,12 @@ The default locations are REDHAT/CENTOS based operating systems
 
 The script needs to run once a day to update the reports using CRON. Note, the scripts need access to the maillog as root or a SUDO user with access to the maillog and web directories.
 
-### Example crontab entry for 11:59 PM
+### Example crontab entry for 11:50 PM
 
 Because we want the report for the previous day, we run this report one minute before midnight
 
 ```
-59 11 * * * /opt/PFLogSumm-HTML-GUI/pflogsummUIReport.sh >/dev/null 2>&1
+50 11 * * * /opt/PFLogSumm-HTML-GUI/pflogsummUIReport.sh >/dev/null 2>&1
 ```
 ## Note about ZIMBRA (if you are using it)
 
