@@ -74,7 +74,7 @@ MOVEF="/usr/bin/mv -f "
 REPORTDATE=$(date '+%Y-%m-%d %H:%M:%S')
 CURRENTYEAR=$(date +'%Y')
 CURRENTMONTH=$(date +'%b')
-CURRENTDAY=$(date +"%d")
+CURRENTDAY=$(date +"%e")
 
 $PFLOGSUMMBIN $PFLOGSUMMOPTIONS  -e $LOGFILELOCATION > /tmp/mailreport
 
